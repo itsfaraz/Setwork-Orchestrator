@@ -5,5 +5,5 @@ import android.content.Intent
 
 
 interface TaskListener {
-    fun onBroadCastRecieveListener(id : Int,title : String)
+    fun onUserNotificationEvent(id : Int,title : String)
 }

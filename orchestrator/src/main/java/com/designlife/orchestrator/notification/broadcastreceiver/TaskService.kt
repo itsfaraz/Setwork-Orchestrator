@@ -18,14 +18,13 @@ class TaskService(
 
     companion object{
         const val TODO_WIZ_CHANNEL = "SETWORK_CHANNEL_ID"
-        var classPath = "com.designlife.justdo.MainActivity"
+        var classPath = "com.designlife.justdo_orchestrator.MainActivity" // "com.designlife.justdo.MainActivity"
     }
 
     fun showNotification(
         todoTitle : String
     ){
         var activity : Any = Class.forName(classPath).newInstance()
-
         val intent = Intent(context,activity::class.java)
         Log.i("NOTIFICATION_FLOW", "showNotification: ${activity.toString()} ${activity.hashCode()}")
         val pendingIntent = PendingIntent.getActivity(

@@ -14,7 +14,7 @@ class TaskNotificationRepository(
     private val alarmManager: AlarmManager
 ) {
     companion object{
-        var classPath = "com.designlife.justdo.MainActivity"
+        var classPath = "com.designlife.justdo_orchestrator.MainActivity"// "com.designlife.justdo.MainActivity"
     }
     fun scheduleNotification(notificationInfo : List<Triple<Date,String,Int>>){
         val pendingIntents = mutableListOf<PendingIntent>()

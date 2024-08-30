@@ -48,9 +48,8 @@ class MainActivity : ComponentActivity() , TaskListener {
         val format = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
         return format.format(Date(epoch))
     }
-
-    override fun onBroadCastRecieveListener(id : Int,title : String) {
-        Log.i("NOTIFICATION_FLOW", "onBroadCastRecieveListener: $id")
+    override fun onUserNotificationEvent(id: Int, title: String) {
+        Log.i("NOTIFICATION_FLOW", "onUserNotificationEvent: $id")
     }
 
 
