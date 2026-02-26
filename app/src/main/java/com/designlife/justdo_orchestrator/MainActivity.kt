@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import com.designlife.orchestrator.NotificationServiceLocator
 import com.designlife.orchestrator.notification.clickmanager.NotificationClickManager
 import com.designlife.orchestrator.notification.clickmanager.TaskListener
+import com.designlife.orchestrator.notification.data.NotificationInfo
 import com.designlife.orchestrator.notification.repository.TaskNotificationRepository
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -26,21 +27,21 @@ class MainActivity : ComponentActivity() , TaskListener {
 
         alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        taskRepository = NotificationServiceLocator.provideNotificationRepository(this,alarmManager)
+        taskRepository = NotificationServiceLocator.provideNotificationRepository(this@MainActivity,alarmManager)
         NotificationClickManager.setListener(this)
         scheduleNotifications()
     }
 
     private fun scheduleNotifications(){
         val date = Date(System.currentTimeMillis())
-        val triplets = mutableListOf<Triple<Date,String,Int>>()
-
-        triplets.add(Triple(date,"Daily DSA Learning",1))
         val secondDate = Date(date.time + (60*1000))
-        triplets.add(Triple(secondDate,"Daily exercise agenda",2))
         val thirdDate = Date(secondDate.time + (60*1000))
-        triplets.add(Triple(thirdDate,"Brisk walk reminder",3))
-        taskRepository.scheduleNotification(triplets)
+
+
+        val notificationInfo1 = NotificationInfo(date = date,taskTitle = "Daily DSA Learning",taskSubTitle = "Learning and improving",taskId = 1)
+        val notificationInfo2 = NotificationInfo(date = secondDate,taskTitle = "Daily exercise agenda",taskSubTitle = "Exercise| Fun| Health",taskId = 2)
+        val notificationInfo3 = NotificationInfo(date = thirdDate,taskTitle = "Brisk walk reminder",taskSubTitle = "Jogging",taskId = 3)
+        taskRepository.scheduleNotification(listOf(notificationInfo1,notificationInfo2,notificationInfo3))
         Toast.makeText(this, "All Notifications Scheduled", Toast.LENGTH_SHORT).show()
     }
 
@@ -48,9 +49,9 @@ class MainActivity : ComponentActivity() , TaskListener {
         val format = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
         return format.format(Date(epoch))
     }
+
     override fun onUserNotificationEvent(id: Int, title: String) {
         Log.i("NOTIFICATION_FLOW", "onUserNotificationEvent: $id")
     }
-
 
 }

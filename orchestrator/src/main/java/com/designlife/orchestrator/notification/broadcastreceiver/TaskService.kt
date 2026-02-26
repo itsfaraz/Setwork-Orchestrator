@@ -1,7 +1,5 @@
 package com.designlife.orchestrator.notification.broadcastreceiver
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlarmManager
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -18,11 +16,14 @@ class TaskService(
 
     companion object{
         const val TODO_WIZ_CHANNEL = "SETWORK_CHANNEL_ID"
-        var classPath = "com.designlife.justdo_orchestrator.MainActivity" // "com.designlife.justdo.MainActivity"
+        var classPath =  "com.designlife.justdo.MainActivity"
+//        var classPath =  "com.designlife.justdo_orchestrator.MainActivity"
     }
 
     fun showNotification(
-        todoTitle : String
+        todoTitle : String,
+        todoSubTitle : String
+
     ){
         var activity : Any = Class.forName(classPath).newInstance()
         val intent = Intent(context,activity::class.java)
@@ -36,8 +37,8 @@ class TaskService(
         val notification = NotificationCompat
             .Builder(context, TODO_WIZ_CHANNEL)
             .setSmallIcon(R.drawable.baseline_adjust_24)
-            .setContentTitle("Congrats \uD83C\uDF89! Goal Achieved \uD83D\uDE80")
-            .setContentText(todoTitle)
+            .setContentTitle(todoTitle)
+            .setContentText(todoSubTitle)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)

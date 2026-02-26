@@ -1,40 +1,40 @@
 package com.designlife.orchestrator.notification.repository
 
 import android.app.AlarmManager
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.designlife.orchestrator.notification.broadcastreceiver.TaskReceiver
-import com.designlife.orchestrator.notification.broadcastreceiver.TaskService
-import java.util.Date
+import com.designlife.orchestrator.notification.data.NotificationInfo
 
 class TaskNotificationRepository(
     private val context: Context,
     private val alarmManager: AlarmManager
 ) {
     companion object{
-        var classPath = "com.designlife.justdo_orchestrator.MainActivity"// "com.designlife.justdo.MainActivity"
+        var classPath = "com.designlife.justdo.MainActivity"
+//        var classPath = "com.designlife.justdo_orchestrator.MainActivity"
     }
-    fun scheduleNotification(notificationInfo : List<Triple<Date,String,Int>>){
+    fun scheduleNotification(notificationInfoList : List<NotificationInfo>){
         val pendingIntents = mutableListOf<PendingIntent>()
-        for (p in notificationInfo.indices){
+        notificationInfoList.forEachIndexed{ index, notificationInfo ->
             val intent = Intent(context, TaskReceiver::class.java)
-            intent.putExtra("title",notificationInfo.get(p).second)
-            intent.putExtra("todoId",notificationInfo.get(p).third)
+            intent.putExtra("title",notificationInfo.taskTitle)
+            intent.putExtra("subTitle",notificationInfo.taskSubTitle)
+            intent.putExtra("todoId",notificationInfo.taskId)
             intent.putExtra("classPath", classPath)
             pendingIntents.add(
                 PendingIntent.getBroadcast(
                     context,
-                    (System.currentTimeMillis() + notificationInfo.get(p).second.hashCode()).toInt(),
+                    (System.currentTimeMillis() + notificationInfo.date.hashCode()).toInt(),
                     intent,
                     PendingIntent.FLAG_IMMUTABLE
                 )
             )
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
-                notificationInfo.get(p).first.time,
-                pendingIntents.get(p)
+                notificationInfo.date.time,
+                pendingIntents.get(index)
             )
         }
     }
