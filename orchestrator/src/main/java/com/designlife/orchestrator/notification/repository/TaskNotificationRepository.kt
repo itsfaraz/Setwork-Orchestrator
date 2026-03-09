@@ -10,12 +10,13 @@ import com.designlife.orchestrator.notification.data.NotificationInfo
 class TaskNotificationRepository(
     private val context: Context,
     private val alarmManager: AlarmManager,
+    private val notificationStoreRepository: NotificationStoreRepository
 ) {
     companion object{
-        var classPath = "com.designlife.justdo.MainActivity"
-//        var classPath = "com.designlife.justdo_orchestrator.MainActivity"
+//        var classPath = "com.designlife.justdo.MainActivity"
+        var classPath = "com.designlife.justdo_orchestrator.MainActivity"
     }
-    fun scheduleNotification(notificationInfoList : List<NotificationInfo>){
+    suspend fun scheduleNotification(notificationInfoList : List<NotificationInfo>){
         val pendingIntents = mutableListOf<PendingIntent>()
         notificationInfoList.forEachIndexed{ index, notificationInfo ->
             val intent = Intent(context, TaskReceiver::class.java)
@@ -26,16 +27,20 @@ class TaskNotificationRepository(
             pendingIntents.add(
                 PendingIntent.getBroadcast(
                     context,
-                    (System.currentTimeMillis() + notificationInfo.date.hashCode()).toInt(),
+                    (System.currentTimeMillis() + notificationInfo.time.hashCode()).toInt(),
                     intent,
-                    PendingIntent.FLAG_IMMUTABLE
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                 )
             )
-            alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP,
-                notificationInfo.date.time,
-                pendingIntents.get(index)
-            )
+
+            if (notificationInfo.time >= System.currentTimeMillis()) {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    notificationInfo.time,
+                    pendingIntents.get(index)
+                )
+            }
+            notificationStoreRepository.storeNotifications(notificationInfoList)
         }
     }
 }

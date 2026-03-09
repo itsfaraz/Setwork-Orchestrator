@@ -1,10 +1,17 @@
 package com.designlife.orchestrator.notification.data
 
-import java.util.Date
+import android.annotation.SuppressLint
+import kotlinx.serialization.Serializable
 
+@SuppressLint("UnsafeOptInUsageError")
+@Serializable
 data class NotificationInfo(
-    val date : Date,
-    val taskTitle : String,
-    val taskSubTitle : String,
-    val taskId : Int
-)
+    val time: Long = 0L,
+    val taskTitle : String = "",
+    val taskSubTitle : String = "",
+    val taskId : Int = 0
+){
+    override fun toString(): String {
+        return "Task Title : ${taskTitle}, Time : ${time}, Subtitle : ${taskSubTitle} \n"
+    }
+}

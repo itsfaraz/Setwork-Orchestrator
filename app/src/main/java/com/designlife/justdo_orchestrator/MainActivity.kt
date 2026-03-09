@@ -12,6 +12,7 @@ import com.designlife.orchestrator.notification.clickmanager.NotificationClickMa
 import com.designlife.orchestrator.notification.clickmanager.TaskListener
 import com.designlife.orchestrator.notification.data.NotificationInfo
 import com.designlife.orchestrator.notification.repository.TaskNotificationRepository
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -36,17 +37,19 @@ class MainActivity : ComponentActivity() , TaskListener {
         val date = Date(System.currentTimeMillis())
         val secondDate = Date(date.time + (60*1000))
         val thirdDate = Date(secondDate.time + (60*1000))
-        val fourthDate = Date(thirdDate.time + (60*1000))
-        val fifthDate = Date(fourthDate.time + (60*1000))
+        val fourthDate = Date(thirdDate.time + (2*60*1000))
+        val fifthDate = Date(fourthDate.time + (2*60*1000))
 
 
-        val notificationInfo1 = NotificationInfo(date = date,taskTitle = "Daily DSA Learning",taskSubTitle = "Learning and improving",taskId = 1)
-        val notificationInfo2 = NotificationInfo(date = secondDate,taskTitle = "Daily exercise agenda",taskSubTitle = "Exercise| Fun| Health",taskId = 2)
-        val notificationInfo3 = NotificationInfo(date = thirdDate,taskTitle = "Brisk walk reminder",taskSubTitle = "Jogging",taskId = 3)
-        val notificationInfo4 = NotificationInfo(date = fourthDate,taskTitle = "Device Reboot - Test Check 1",taskSubTitle = "Device Restart Check",taskId = 4)
-        val notificationInfo5 = NotificationInfo(date = fifthDate,taskTitle = "Device Reboot - Test Check 2",taskSubTitle = "Device Restart Check",taskId = 5)
-        taskRepository.scheduleNotification(listOf(notificationInfo1,notificationInfo2,notificationInfo3,notificationInfo4,notificationInfo5))
-        Toast.makeText(this, "All Notifications Scheduled", Toast.LENGTH_SHORT).show()
+        val notificationInfo1 = NotificationInfo(time = date.time,taskTitle = "Daily DSA Learning",taskSubTitle = "Learning and improving",taskId = 1)
+        val notificationInfo2 = NotificationInfo(time = secondDate.time,taskTitle = "Daily exercise agenda",taskSubTitle = "Exercise| Fun| Health",taskId = 2)
+        val notificationInfo3 = NotificationInfo(time = thirdDate.time,taskTitle = "Brisk walk reminder",taskSubTitle = "Jogging",taskId = 3)
+        val notificationInfo4 = NotificationInfo(time = fourthDate.time,taskTitle = "Device Reboot - Test Check 1",taskSubTitle = "Device Restart Check",taskId = 4)
+        val notificationInfo5 = NotificationInfo(time = fifthDate.time,taskTitle = "Device Reboot - Test Check 2",taskSubTitle = "Device Restart Check",taskId = 5)
+        runBlocking {
+            taskRepository.scheduleNotification(listOf(notificationInfo1,notificationInfo2,notificationInfo3,notificationInfo4,notificationInfo5))
+            Toast.makeText(this@MainActivity, "All Notifications Scheduled", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getTimeString(epoch : Long) : String{
