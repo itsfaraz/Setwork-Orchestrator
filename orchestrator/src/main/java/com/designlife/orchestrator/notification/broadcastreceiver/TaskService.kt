@@ -16,8 +16,8 @@ class TaskService(
 
     companion object{
         const val TODO_WIZ_CHANNEL = "SETWORK_CHANNEL_ID"
-        var classPath =  "com.designlife.justdo.MainActivity"
-//        var classPath =  "com.designlife.justdo_orchestrator.MainActivity"
+//        var classPath =  "com.designlife.justdo.MainActivity"
+        var classPath =  "com.designlife.justdo_orchestrator.MainActivity"
     }
 
     fun showNotification(

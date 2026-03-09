@@ -6,6 +6,12 @@
 
     <application
         android:name=".Orchestrator">
-        <receiver android:name=".notification.broadcastreceiver.TaskReceiver"/>
+        <receiver android:name=".notification.broadcastreceiver.TaskReceiver" android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

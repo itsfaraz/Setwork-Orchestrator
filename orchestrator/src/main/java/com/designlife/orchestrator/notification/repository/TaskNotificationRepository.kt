@@ -9,7 +9,7 @@ import com.designlife.orchestrator.notification.data.NotificationInfo
 
 class TaskNotificationRepository(
     private val context: Context,
-    private val alarmManager: AlarmManager
+    private val alarmManager: AlarmManager,
 ) {
     companion object{
         var classPath = "com.designlife.justdo.MainActivity"
