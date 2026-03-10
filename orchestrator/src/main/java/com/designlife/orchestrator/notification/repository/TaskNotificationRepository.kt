@@ -5,9 +5,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.designlife.orchestrator.notification.broadcastreceiver.TaskReceiver
-import com.designlife.orchestrator.notification.data.NotificationInfo
+import com.designlife.orchestrator.data.NotificationInfo
 
-class TaskNotificationRepository(
+internal class TaskNotificationRepository(
     private val context: Context,
     private val alarmManager: AlarmManager,
     private val notificationStoreRepository: NotificationStoreRepository
@@ -27,16 +27,16 @@ class TaskNotificationRepository(
             pendingIntents.add(
                 PendingIntent.getBroadcast(
                     context,
-                    (System.currentTimeMillis() + notificationInfo.time.hashCode()).toInt(),
+                    (System.currentTimeMillis() + notificationInfo.scheduledTime.hashCode()).toInt(),
                     intent,
                     PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                 )
             )
 
-            if (notificationInfo.time >= System.currentTimeMillis()) {
+            if (notificationInfo.scheduledTime >= System.currentTimeMillis()) {
                 alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
-                    notificationInfo.time,
+                    notificationInfo.scheduledTime,
                     pendingIntents.get(index)
                 )
             }

@@ -4,6 +4,6 @@ import android.content.Context
 import android.content.Intent
 
 
-interface TaskListener {
+public interface TaskListener {
     fun onUserNotificationEvent(id : Int,title : String)
 }

@@ -2,7 +2,7 @@ package com.designlife.orchestrator.notification.store
 
 import android.content.Context
 import androidx.datastore.dataStore
-import com.designlife.orchestrator.notification.data.NotificationInfo
+import com.designlife.orchestrator.data.NotificationInfo
 import kotlinx.coroutines.flow.first
 
 class NotificationStore(
@@ -17,7 +17,7 @@ class NotificationStore(
         context.myDataStore.updateData { list ->
             (list + notificationInfo)
                 .distinctBy { it.taskId }
-                .sortedByDescending { it.time ?: 0 }
+                .sortedByDescending { it.scheduledTime ?: 0 }
                 .take(50)
         }
     }

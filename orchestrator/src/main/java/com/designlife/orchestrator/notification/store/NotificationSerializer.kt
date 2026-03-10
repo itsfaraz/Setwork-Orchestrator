@@ -2,12 +2,11 @@ package com.designlife.orchestrator.notification.store
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import com.designlife.orchestrator.notification.data.NotificationInfo
+import com.designlife.orchestrator.data.NotificationInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream

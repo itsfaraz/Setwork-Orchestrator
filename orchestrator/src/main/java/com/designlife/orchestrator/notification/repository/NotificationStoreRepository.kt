@@ -1,11 +1,10 @@
 package com.designlife.orchestrator.notification.repository
 
-import com.designlife.orchestrator.notification.data.NotificationInfo
+import com.designlife.orchestrator.data.NotificationInfo
 import com.designlife.orchestrator.notification.store.NotificationStore
-import kotlinx.serialization.InternalSerializationApi
 
 
-class NotificationStoreRepository(
+internal class NotificationStoreRepository(
     private val notificationStore: NotificationStore
 ) {
     suspend fun storeNotifications(notificationInfoList : List<NotificationInfo>){

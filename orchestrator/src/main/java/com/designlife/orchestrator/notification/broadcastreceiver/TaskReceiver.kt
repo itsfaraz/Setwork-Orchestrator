@@ -5,14 +5,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.core.content.ContextCompat.getSystemService
-import com.designlife.orchestrator.NotificationServiceLocator
+import com.designlife.orchestrator.notification.NotificationServiceLocator
 import com.designlife.orchestrator.notification.clickmanager.NotificationClickManager
-import com.designlife.orchestrator.notification.data.NotificationInfo
+import com.designlife.orchestrator.data.NotificationInfo
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-class TaskReceiver : BroadcastReceiver(){
+internal class TaskReceiver : BroadcastReceiver(){
     private val scope = MainScope()
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -38,7 +37,7 @@ class TaskReceiver : BroadcastReceiver(){
             val todoId = intent.getIntExtra("todoId",0)
             val classPath = intent.getStringExtra("classPath") ?: ""
             NotificationClickManager.notifyListener(todoId,title,classPath)
-            taskService.showNotification(title,subTitle)
+//            taskService.showNotification(title,subTitle)
             Log.i("NOTIFICATION_FLOW", "onReceive: received")
             scope.launch {
                 NotificationServiceLocator

@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 
-object NotificationClickManager {
+internal object NotificationClickManager {
 
     private lateinit var notificationTaskListener : TaskListener
     private var activity : Any? = null
