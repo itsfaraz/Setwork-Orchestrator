@@ -93,7 +93,7 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
             // Build notification
 
             val notificationBuilder = NotificationCompat.Builder(context, SETWORK_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
+                .setSmallIcon(R.drawable.ic_setwork_notification)
                 .setContentTitle(notification.taskTitle)
                 .setContentText(notification.taskSubTitle)
                 .setAutoCancel(true)
