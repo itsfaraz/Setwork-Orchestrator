@@ -26,6 +26,7 @@ internal class NotificationCleanupWorker(
             
             // Delete notifications older than 30 days
             val thirtyDaysAgo = System.currentTimeMillis() - (30L * 24 * 60 * 60 * 1000)
+//            val thirtyDaysAgo = System.currentTimeMillis() - (2 * 60 * 1000) // Test 2 minutes
             scope.launch {
                 val deletedCount = notificationStore.deleteOlderThan(thirtyDaysAgo)
                 Log.d(tag, "NotificationCleanupWorker:: Deleted $deletedCount old notifications")

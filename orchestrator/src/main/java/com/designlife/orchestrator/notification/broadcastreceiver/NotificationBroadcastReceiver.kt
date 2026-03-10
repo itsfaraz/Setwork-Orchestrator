@@ -8,10 +8,12 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.designlife.orchestrator.NotificationSchedulerImpl
+import com.designlife.orchestrator.R
 import com.designlife.orchestrator.data.NotificationInfo
 import com.designlife.orchestrator.data.NotificationStatus
 import com.designlife.orchestrator.data.NotificationType
 import com.designlife.orchestrator.notification.NotificationServiceLocator
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -91,7 +93,7 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
             // Build notification
 
             val notificationBuilder = NotificationCompat.Builder(context, SETWORK_CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(notification.taskTitle)
                 .setContentText(notification.taskSubTitle)
                 .setAutoCancel(true)
@@ -124,10 +126,10 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
             // Log delivery in database
             val notificationStore = NotificationServiceLocator.provideAppStoreRepository(context)
 
-            scope.launch {
+            scope.launch(Dispatchers.IO) {
                 notificationStore.updateNotificationStatus(
-                    notification.taskId.toString(),
-                    NotificationStatus.DELIVERED
+                    id = notification.taskId.toString(),
+                    status = NotificationStatus.DELIVERED,
                 )
             }
 

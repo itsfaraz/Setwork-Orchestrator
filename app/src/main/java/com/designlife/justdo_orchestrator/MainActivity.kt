@@ -1,5 +1,6 @@
 package com.designlife.justdo_orchestrator
 
+import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -30,6 +31,7 @@ import com.designlife.orchestrator.data.NotificationInfo
 import com.designlife.orchestrator.data.NotificationType
 import com.designlife.orchestrator.notification.clickmanager.TaskListener
 import java.util.Date
+import kotlin.math.absoluteValue
 
 class MainActivity : ComponentActivity() , TaskListener {
     private lateinit var scheduler: NotificationScheduler
@@ -82,13 +84,15 @@ class MainActivity : ComponentActivity() , TaskListener {
         try{
             var time = System.currentTimeMillis()
             if (minutes.equals("0")){
-                time  = System.currentTimeMillis() + 5
+                time  = System.currentTimeMillis() + 50
             }else{
-                time  = System.currentTimeMillis() + (1000 * minutes.toInt())
+                time  = System.currentTimeMillis() + ((minutes.toInt() * 60 ) * 1000)
             }
-            val notificationInfo = NotificationInfo(scheduledTime = time,taskTitle = "Notification Test",taskSubTitle = "Scheduled Notification : Set trigger time ${minutes} minutes",taskId = System.currentTimeMillis().hashCode(), notificationType = NotificationType.TASK_NOTIFY)
+            val notificationInfo = NotificationInfo(scheduledTime = time,taskTitle = "Notification Test",taskSubTitle = "Scheduled Notification : Set trigger time ${minutes} minutes",taskId = System.currentTimeMillis().hashCode().absoluteValue, notificationType = NotificationType.TASK_NOTIFY, createdTime = System.currentTimeMillis())
             scheduler.scheduleNotification(notificationInfo)
-            Toast.makeText(this, "Scheduled Notification For ${minutes} minutes", Toast.LENGTH_SHORT).show()
+            val format: SimpleDateFormat = SimpleDateFormat("hh:mm aa")
+            val formattedTime: String? = format.format(Date(time))
+            Toast.makeText(this, "Scheduled Timed Notification Of ${formattedTime}", Toast.LENGTH_SHORT).show()
         }catch (e : Exception){
             Toast.makeText(this, "Enter Integer Value : example : 10", Toast.LENGTH_SHORT).show()
         }

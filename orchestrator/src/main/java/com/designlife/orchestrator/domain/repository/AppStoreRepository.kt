@@ -1,10 +1,12 @@
 package com.designlife.orchestrator.domain.repository
 
+import android.content.Context
 import android.util.Log
 import com.designlife.orchestrator.data.NotificationInfo
 import com.designlife.orchestrator.data.NotificationStatus
 import com.designlife.orchestrator.data.room.NotificationDao
 import com.designlife.orchestrator.data.room.NotificationEntity
+import com.designlife.orchestrator.notification.NotificationServiceLocator
 
 internal class AppStoreRepository(
     private val notificationDao: NotificationDao
@@ -23,6 +25,7 @@ internal class AppStoreRepository(
     suspend fun updateNotificationStatus(id: String, status: NotificationStatus){
         try {
             val existing = notificationDao.getNotificationById(id)
+            Log.i("NOTIFICATION_FLOW", "AppStoreRepository: updateNotificationStatus : Id - ${id} : Existing Title - ${existing?.taskTitle} : Task Id : ${existing?.taskId}")
             existing?.let {
                 val updated = existing.copy(
                     status = status.name,
@@ -32,7 +35,7 @@ internal class AppStoreRepository(
                 notificationDao.updateNotification(updated)
             }
         } catch (e: Exception) {
-            android.util.Log.e("NotificationStore", "Update failed", e)
+            android.util.Log.e("AppStoreRepository", "Update failed", e)
         }
     }
 
@@ -41,7 +44,7 @@ internal class AppStoreRepository(
         try {
             result = notificationDao.getNotificationById(id)
         } catch (e: Exception) {
-            android.util.Log.e("NotificationStore", "Get by ID failed", e)
+            android.util.Log.e("AppStoreRepository", "Get by ID failed", e)
             null
         }
         return result?.toModel()
@@ -54,7 +57,7 @@ internal class AppStoreRepository(
             entities.addAll(result)
             entities.map { it.toModel() }
         } catch (e: Exception) {
-            android.util.Log.e("NotificationStore", "Get pending failed", e)
+            android.util.Log.e("AppStoreRepository", "Get pending failed", e)
             emptyList()
         }
 
@@ -67,7 +70,7 @@ internal class AppStoreRepository(
             entities.addAll(result)
             entities.map { it.toModel() }
         } catch (e: Exception) {
-            android.util.Log.e("NotificationStore", "Get by status failed", e)
+            android.util.Log.e("AppStoreRepository", "Get by status failed", e)
             emptyList()
         }
     }

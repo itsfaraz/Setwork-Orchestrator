@@ -17,7 +17,7 @@ internal interface NotificationDao {
     @Delete
     suspend fun deleteNotification(notification: NotificationEntity)
 
-    @Query("SELECT * FROM NotificationEntity WHERE id = :id LIMIT 1")
+    @Query("SELECT * FROM NotificationEntity WHERE taskId=:id")
     suspend fun getNotificationById(id: String): NotificationEntity?
 
     @Query("SELECT * FROM notificationentity WHERE status = :status ORDER BY scheduledTime DESC LIMIT :limit")
