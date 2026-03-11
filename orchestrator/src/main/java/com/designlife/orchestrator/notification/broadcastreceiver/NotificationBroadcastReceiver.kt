@@ -4,6 +4,7 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -13,6 +14,7 @@ import com.designlife.orchestrator.data.NotificationInfo
 import com.designlife.orchestrator.data.NotificationStatus
 import com.designlife.orchestrator.data.NotificationType
 import com.designlife.orchestrator.notification.NotificationServiceLocator
+import com.designlife.orchestrator.notification.clickmanager.NotificationClickManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -63,7 +65,6 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
             createdTime = System.currentTimeMillis(),
             deliveredTime = System.currentTimeMillis()
         )
-
         showNotification(context, notification)
     }
 
@@ -91,16 +92,18 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
             }
 
             // Build notification
-
+            val onNotificationClick = NotificationClickManager.getNotificationIntent(context,notification.taskId,notification.taskTitle,classPath)
             val notificationBuilder = NotificationCompat.Builder(context, SETWORK_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_setwork_notification)
                 .setContentTitle(notification.taskTitle)
                 .setContentText(notification.taskSubTitle)
+                .setContentIntent(onNotificationClick)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setVibrate(longArrayOf(0, 500, 250, 500))
-                .setColor(ContextCompat.getColor(context, android.R.color.holo_blue_dark))
+                .setLights(Color.BLUE, 500, 2000)
+                .setColor(ContextCompat.getColor(context, android.R.color.transparent))
 
             // Add action if data contains action_url
 //            notification.data["action_url"]?.let { url ->

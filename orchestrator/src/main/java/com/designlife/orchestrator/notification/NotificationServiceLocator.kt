@@ -6,40 +6,10 @@ import androidx.work.WorkManager
 import com.designlife.orchestrator.NotificationSchedulerImpl
 import com.designlife.orchestrator.data.room.AppDatabase
 import com.designlife.orchestrator.domain.repository.AppStoreRepository
-import com.designlife.orchestrator.notification.repository.NotificationStoreRepository
-import com.designlife.orchestrator.notification.repository.TaskNotificationRepository
-import com.designlife.orchestrator.notification.store.NotificationStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
 internal object NotificationServiceLocator {
-    private var taskNotificationRepository : TaskNotificationRepository? = null
-    private var notificationStoreRepository : NotificationStoreRepository? = null
-
-
-    public fun provideNotificationStoreRepository(context: Context) : NotificationStoreRepository {
-        return notificationStoreRepository ?: createNotificationStoreRepository(context)
-    }
-
-    fun createNotificationStoreRepository(context: Context): NotificationStoreRepository {
-        notificationStoreRepository = NotificationStoreRepository(NotificationStore(context))
-        return notificationStoreRepository!!
-    }
-
-    public fun provideNotificationRepository(context : Context, alarmManager: AlarmManager) : TaskNotificationRepository {
-        return taskNotificationRepository ?: createNotificationRepository(context,alarmManager)
-    }
-
-    private fun createNotificationRepository(context: Context, alarmManager: AlarmManager): TaskNotificationRepository {
-        taskNotificationRepository = TaskNotificationRepository(
-            context,
-            alarmManager,
-            provideNotificationStoreRepository(context)
-        )
-        return taskNotificationRepository!!
-    }
-
-
     private var alarmManager : AlarmManager? = null
     private var workManager : WorkManager? = null
 

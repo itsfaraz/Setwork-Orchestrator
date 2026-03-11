@@ -1,11 +1,7 @@
 package com.designlife.orchestrator.data
 
-import android.annotation.SuppressLint
 import com.designlife.orchestrator.data.room.NotificationEntity
-import kotlinx.serialization.Serializable
 
-@SuppressLint("UnsafeOptInUsageError")
-@Serializable
 public data class NotificationInfo(
     val scheduledTime: Long = 0L,
     val taskTitle : String = "",

@@ -1,37 +1,38 @@
 package com.designlife.orchestrator.notification.clickmanager
 
-import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 
-internal object NotificationClickManager {
-
-    private lateinit var notificationTaskListener : TaskListener
-    private var activity : Any? = null
-
-
-    public fun setListener(notificationTaskListener : TaskListener){
-        this.notificationTaskListener = notificationTaskListener
-    }
-
-    public fun notifyListener(id : Int, title : String, classPath : String){
+object NotificationClickManager {
+    internal fun getNotificationIntent(context: Context,notificationId : Int, title : String, classPath : String) : PendingIntent?{
         try {
             if (classPath.isNotEmpty()){
-                if (activity == null){
-                    activity = Class.forName(classPath).newInstance() as Activity
-                }
-                notificationTaskListener = activity as TaskListener
-                Log.i("NOTIFICATION_FLOW", "notifyListener: notifyListener")
-                if ((activity as Activity).intent.getBooleanExtra("fromNotification",false)){
-                    Log.i("NOTIFICATION_FLOW", "onCreate: User Clicked Notification")
-                    notificationTaskListener.onUserNotificationEvent(id,title)
+                Log.i("NOTIFICATION_FLOW", "NotificationClickManager:: getNotificationIntent")
+
+                val activity : Activity = Class.forName(classPath).newInstance() as Activity
+                activity?.let {
+                    val intent = Intent(context, activity::class.java).apply {
+                        putExtra("fromNotification", true)
+                        putExtra("notificationId", notificationId)
+                        putExtra("title", title)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }
+                    Log.i("NOTIFICATION_FLOW", "NotificationClickManager:: getNotificationIntent : pending intent")
+                    return PendingIntent.getActivity(
+                        context,
+                        notificationId,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    )
                 }
             }
         }catch (e : Exception){
             e.printStackTrace()
         }
+        Log.i("NOTIFICATION_FLOW", "NotificationClickManager:: getNotificationIntent : pending intent = null")
+        return null
     }
-
 }

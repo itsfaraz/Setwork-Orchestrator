@@ -29,6 +29,7 @@ import com.designlife.orchestrator.NotificationScheduler
 import com.designlife.orchestrator.SchedulingEngine
 import com.designlife.orchestrator.data.NotificationInfo
 import com.designlife.orchestrator.data.NotificationType
+import com.designlife.orchestrator.notification.clickmanager.NotificationClickManager
 import com.designlife.orchestrator.notification.clickmanager.TaskListener
 import java.util.Date
 import kotlin.math.absoluteValue
@@ -39,6 +40,7 @@ class MainActivity : ComponentActivity() , TaskListener {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        onNotificationAvailable()
         scheduler = SchedulingEngine(this).notificationScheduler()
 //        scheduleNotifications()
         setContent {
@@ -80,6 +82,15 @@ class MainActivity : ComponentActivity() , TaskListener {
 
     }
 
+    private fun onNotificationAvailable() {
+        if (intent?.getBooleanExtra("fromNotification", false) == true) {
+            val id = intent.getIntExtra("notificationId", 0)
+            val title = intent.getStringExtra("title") ?: ""
+
+            onUserNotificationEvent(id, title)
+        }
+    }
+
     private fun scheduleNotificationByTime(minutes : String){
         try{
             var time = System.currentTimeMillis()
@@ -119,7 +130,7 @@ class MainActivity : ComponentActivity() , TaskListener {
 
 
     override fun onUserNotificationEvent(id: Int, title: String) {
-        Log.i("NOTIFICATION_FLOW", "onUserNotificationEvent: $id")
+        Log.i("NOTIFICATION_FLOW", "onUserNotificationEvent: Title $title :: Id ${id}")
     }
 
 }
