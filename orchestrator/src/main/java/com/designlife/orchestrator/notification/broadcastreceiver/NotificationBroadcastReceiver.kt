@@ -190,8 +190,8 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
         internal const val SETWORK_DECK_CHANNEL = "SETWORK_CHANNEL_DECK_ID"
         internal const val SETWORK_DELIVERY_CHANNEL = "SETWORK_CHANNEL_DELIVERY_ID"
 
-//        var classPath =  "com.designlife.justdo.MainActivity"
-        var classPath =  "com.designlife.justdo_orchestrator.MainActivity"
+        var classPath =  "com.designlife.justdo.MainActivity"
+//        var classPath =  "com.designlife.justdo_orchestrator.MainActivity"
 
 
         fun getChannelId(notificationType: NotificationType) : String{

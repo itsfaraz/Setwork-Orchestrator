@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.github.itsfaraz'
-version = '1.0.7'
+version = '1.0.8'
 
 android {
     namespace 'com.designlife.orchestrator'
