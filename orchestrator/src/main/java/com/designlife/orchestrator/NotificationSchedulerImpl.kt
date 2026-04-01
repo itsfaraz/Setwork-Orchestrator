@@ -265,7 +265,7 @@ internal class NotificationSchedulerImpl(
         const val WORK_TAG_NOTIFICATIONS = "notifications"
         const val KEY_NOTIFICATION_ID = "notification_id"
         const val KEY_TITLE = "title"
-        const val KEY_TYPE = "title"
+        const val KEY_TYPE = "type"
         const val KEY_MESSAGE = "message"
         const val KEY_SCHEDULED_TIME = "scheduled_time"
     }
