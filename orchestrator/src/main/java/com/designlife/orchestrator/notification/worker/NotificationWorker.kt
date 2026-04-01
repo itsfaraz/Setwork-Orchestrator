@@ -7,6 +7,8 @@ import androidx.work.WorkerParameters
 import com.designlife.orchestrator.NotificationSchedulerImpl
 import com.designlife.orchestrator.data.NotificationInfo
 import com.designlife.orchestrator.data.NotificationStatus
+import com.designlife.orchestrator.data.NotificationType
+import com.designlife.orchestrator.data.NotificationTypeI
 import com.designlife.orchestrator.notification.NotificationServiceLocator
 import com.designlife.orchestrator.notification.broadcastreceiver.NotificationBroadcastReceiver
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +39,9 @@ internal class NotificationWorker(
                 NotificationSchedulerImpl.KEY_SCHEDULED_TIME,
                 System.currentTimeMillis()
             )
-            
+            val type = inputData.getString(NotificationSchedulerImpl.KEY_TYPE)
+                ?: ""
+
             scope.launch(Dispatchers.Main.immediate) {
                 // Check if notification should still be delivered
 
@@ -50,6 +54,7 @@ internal class NotificationWorker(
                         taskId = notificationId.toInt(),
                         taskTitle = title,
                         taskSubTitle = message,
+                        notificationType = NotificationTypeI.getType(type),
                         scheduledTime = scheduledTime,
                         notificationStatus = NotificationStatus.DELIVERED,
                         createdTime = System.currentTimeMillis(),

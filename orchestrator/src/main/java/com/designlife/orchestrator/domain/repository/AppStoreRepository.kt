@@ -1,12 +1,10 @@
 package com.designlife.orchestrator.domain.repository
 
-import android.content.Context
 import android.util.Log
 import com.designlife.orchestrator.data.NotificationInfo
 import com.designlife.orchestrator.data.NotificationStatus
 import com.designlife.orchestrator.data.room.NotificationDao
 import com.designlife.orchestrator.data.room.NotificationEntity
-import com.designlife.orchestrator.notification.NotificationServiceLocator
 
 internal class AppStoreRepository(
     private val notificationDao: NotificationDao

@@ -13,6 +13,7 @@ import com.designlife.orchestrator.R
 import com.designlife.orchestrator.data.NotificationInfo
 import com.designlife.orchestrator.data.NotificationStatus
 import com.designlife.orchestrator.data.NotificationType
+import com.designlife.orchestrator.data.NotificationTypeI
 import com.designlife.orchestrator.notification.NotificationServiceLocator
 import com.designlife.orchestrator.notification.clickmanager.NotificationClickManager
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +54,7 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
         val notificationId = intent.getIntExtra(NotificationSchedulerImpl.EXTRA_NOTIFICATION_ID,0)
         val title = intent.getStringExtra(NotificationSchedulerImpl.EXTRA_TITLE) ?: "Notification"
         val message = intent.getStringExtra(NotificationSchedulerImpl.EXTRA_MESSAGE) ?: ""
+        val type = NotificationTypeI.getType(intent.getStringExtra(NotificationSchedulerImpl.EXTRA_TYPE) ?: "")
 
         Log.d(tag, "Displaying notification: $notificationId")
 
@@ -60,6 +62,7 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
             taskId = notificationId.toInt(),
             taskTitle = title,
             taskSubTitle = message,
+            notificationType = type,
             scheduledTime = System.currentTimeMillis(),
             notificationStatus = NotificationStatus.DELIVERED,
             createdTime = System.currentTimeMillis(),
@@ -92,11 +95,12 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
             }
 
             // Build notification
-            val onNotificationClick = NotificationClickManager.getNotificationIntent(context,notification.taskId,notification.taskTitle,classPath)
+            val onNotificationClick = NotificationClickManager.getNotificationIntent(context,notification.taskId,notification.taskTitle,notification.notificationType,classPath)
             val notificationBuilder = NotificationCompat.Builder(context, SETWORK_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_setwork_notification)
                 .setContentTitle(notification.taskTitle)
                 .setContentText(notification.taskSubTitle)
+                .setColorized(true)
                 .setContentIntent(onNotificationClick)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -104,21 +108,6 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
                 .setVibrate(longArrayOf(0, 500, 250, 500))
                 .setLights(Color.BLUE, 500, 2000)
                 .setColor(ContextCompat.getColor(context, android.R.color.transparent))
-
-            // Add action if data contains action_url
-//            notification.data["action_url"]?.let { url ->
-//                val intent = Intent(Intent.ACTION_VIEW).apply {
-//                    data = android.net.Uri.parse(url)
-//                }
-//                val pendingIntent = android.app.PendingIntent.getActivity(
-//                    context,
-//                    notification.id.hashCode(),
-//                    intent,
-//                    android.app.PendingIntent.FLAG_UPDATE_CURRENT or
-//                            android.app.PendingIntent.FLAG_IMMUTABLE
-//                )
-//                notificationBuilder.setContentIntent(pendingIntent)
-//            }
 
             // Show notification
             notificationManager.notify(
@@ -190,8 +179,8 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
         internal const val SETWORK_DECK_CHANNEL = "SETWORK_CHANNEL_DECK_ID"
         internal const val SETWORK_DELIVERY_CHANNEL = "SETWORK_CHANNEL_DELIVERY_ID"
 
-        var classPath =  "com.designlife.justdo.MainActivity"
-//        var classPath =  "com.designlife.justdo_orchestrator.MainActivity"
+//        var classPath =  "com.designlife.justdo.MainActivity"
+        var classPath =  "com.designlife.justdo_orchestrator.MainActivity"
 
 
         fun getChannelId(notificationType: NotificationType) : String{

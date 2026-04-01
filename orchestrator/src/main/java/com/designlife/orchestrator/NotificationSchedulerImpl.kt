@@ -14,6 +14,7 @@ import com.designlife.orchestrator.data.NotificationInfo
 import com.designlife.orchestrator.data.NotificationPriority
 import com.designlife.orchestrator.data.NotificationStatus
 import com.designlife.orchestrator.data.NotificationType
+import com.designlife.orchestrator.data.NotificationTypeI
 import com.designlife.orchestrator.notification.NotificationServiceLocator
 import com.designlife.orchestrator.notification.broadcastreceiver.NotificationBroadcastReceiver
 import com.designlife.orchestrator.notification.worker.NotificationWorker
@@ -86,6 +87,7 @@ internal class NotificationSchedulerImpl(
                 putExtra(EXTRA_NOTIFICATION_ID, notification.taskId)
                 putExtra(EXTRA_TITLE, notification.taskTitle)
                 putExtra(EXTRA_MESSAGE, notification.taskSubTitle)
+                putExtra(EXTRA_TYPE, NotificationTypeI.getTypeString(notification.notificationType))
             }
 
             val pendingIntent = PendingIntent.getBroadcast(
@@ -158,7 +160,8 @@ internal class NotificationSchedulerImpl(
                         KEY_NOTIFICATION_ID to notification.taskId,
                         KEY_TITLE to notification.taskTitle,
                         KEY_MESSAGE to notification.taskSubTitle,
-                        KEY_SCHEDULED_TIME to notification.scheduledTime
+                        KEY_SCHEDULED_TIME to notification.scheduledTime,
+                        KEY_TYPE to NotificationTypeI.getTypeString(notification.notificationType)
                     )
                 )
                 .build()
@@ -256,11 +259,13 @@ internal class NotificationSchedulerImpl(
         const val ACTION_SHOW_NOTIFICATION = "com.example.notifications.SHOW_NOTIFICATION"
         const val EXTRA_NOTIFICATION_ID = "notification_id"
         const val EXTRA_TITLE = "title"
+        const val EXTRA_TYPE = "type"
         const val EXTRA_MESSAGE = "message"
         const val EXTRA_DATA = "data"
         const val WORK_TAG_NOTIFICATIONS = "notifications"
         const val KEY_NOTIFICATION_ID = "notification_id"
         const val KEY_TITLE = "title"
+        const val KEY_TYPE = "title"
         const val KEY_MESSAGE = "message"
         const val KEY_SCHEDULED_TIME = "scheduled_time"
     }

@@ -86,8 +86,9 @@ class MainActivity : ComponentActivity() , TaskListener {
         if (intent?.getBooleanExtra("fromNotification", false) == true) {
             val id = intent.getIntExtra("notificationId", 0)
             val title = intent.getStringExtra("title") ?: ""
+            val type = intent.getStringExtra("type") ?: ""
 
-            onUserNotificationEvent(id, title)
+            onUserNotificationEvent(id, title, type)
         }
     }
 
@@ -99,7 +100,7 @@ class MainActivity : ComponentActivity() , TaskListener {
             }else{
                 time  = System.currentTimeMillis() + ((minutes.toInt() * 60 ) * 1000)
             }
-            val notificationInfo = NotificationInfo(scheduledTime = time,taskTitle = "Notification Test",taskSubTitle = "Scheduled Notification : Set trigger time ${minutes} minutes",taskId = System.currentTimeMillis().hashCode().absoluteValue, notificationType = NotificationType.TASK_NOTIFY, createdTime = System.currentTimeMillis())
+            val notificationInfo = NotificationInfo(scheduledTime = time,taskTitle = "Notification Test",taskSubTitle = "Scheduled Notification : Set trigger time ${minutes} minutes",taskId = System.currentTimeMillis().hashCode().absoluteValue, notificationType = NotificationType.DECK_NOTIFY, createdTime = System.currentTimeMillis())
             scheduler.scheduleNotification(notificationInfo)
             val format: SimpleDateFormat = SimpleDateFormat("hh:mm aa")
             val formattedTime: String? = format.format(Date(time))
@@ -129,8 +130,9 @@ class MainActivity : ComponentActivity() , TaskListener {
     }
 
 
-    override fun onUserNotificationEvent(id: Int, title: String) {
-        Log.i("NOTIFICATION_FLOW", "onUserNotificationEvent: Title $title :: Id ${id}")
+    override fun onUserNotificationEvent(id: Int, title: String, type : String) {
+        Log.i("NOTIFICATION_FLOW", "onUserNotificationEvent: Title $title :: Id ${id} :: Type ${type}")
+        Toast.makeText(this, "Setwork Orchestrator\n Title $title ::\n Id ${id} ::\n Type ${type}\n", Toast.LENGTH_SHORT).show()
     }
 
 }

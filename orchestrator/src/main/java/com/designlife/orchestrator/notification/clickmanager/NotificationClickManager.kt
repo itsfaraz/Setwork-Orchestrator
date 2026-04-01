@@ -5,9 +5,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.designlife.orchestrator.data.NotificationType
+import com.designlife.orchestrator.data.NotificationTypeI
 
 object NotificationClickManager {
-    internal fun getNotificationIntent(context: Context,notificationId : Int, title : String, classPath : String) : PendingIntent?{
+    internal fun getNotificationIntent(context: Context,notificationId : Int, title : String, type: NotificationType, classPath : String) : PendingIntent?{
         try {
             if (classPath.isNotEmpty()){
                 Log.i("NOTIFICATION_FLOW", "NotificationClickManager:: getNotificationIntent")
@@ -18,6 +20,7 @@ object NotificationClickManager {
                         putExtra("fromNotification", true)
                         putExtra("notificationId", notificationId)
                         putExtra("title", title)
+                        putExtra("type", NotificationTypeI.getTypeString(type))
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                     }
                     Log.i("NOTIFICATION_FLOW", "NotificationClickManager:: getNotificationIntent : pending intent")
