@@ -16,7 +16,7 @@ internal class AppStoreRepository(
             val entity = notificationInfo.toEntity()
             notificationDao.insertNotification(entity)
         } catch (e: Exception) {
-            android.util.Log.e("NotificationStore", "Insert failed", e)
+            Log.e("NotificationStore", "Insert failed", e)
         }
     }
 
@@ -33,7 +33,7 @@ internal class AppStoreRepository(
                 notificationDao.updateNotification(updated)
             }
         } catch (e: Exception) {
-            android.util.Log.e("AppStoreRepository", "Update failed", e)
+            Log.e("AppStoreRepository", "Update failed", e)
         }
     }
 
@@ -55,7 +55,7 @@ internal class AppStoreRepository(
             entities.addAll(result)
             entities.map { it.toModel() }
         } catch (e: Exception) {
-            android.util.Log.e("AppStoreRepository", "Get pending failed", e)
+            Log.e("AppStoreRepository", "Get pending failed", e)
             emptyList()
         }
 
@@ -68,7 +68,7 @@ internal class AppStoreRepository(
             entities.addAll(result)
             entities.map { it.toModel() }
         } catch (e: Exception) {
-            android.util.Log.e("AppStoreRepository", "Get by status failed", e)
+            Log.e("AppStoreRepository", "Get by status failed", e)
             emptyList()
         }
     }
@@ -80,7 +80,7 @@ internal class AppStoreRepository(
             entities.addAll(result)
             entities.map { it.toModel() }
         } catch (e: Exception) {
-            android.util.Log.e("NotificationStore", "Get all failed", e)
+            Log.e("NotificationStore", "Get all failed", e)
             emptyList()
         }
     }
@@ -91,7 +91,7 @@ internal class AppStoreRepository(
             count[0] = notificationDao.deleteOlderThan(timestamp)
             count[0]
         } catch (e: Exception) {
-            android.util.Log.e("NotificationStore", "Delete failed", e)
+            Log.e("NotificationStore", "Delete failed", e)
             0
         }
 

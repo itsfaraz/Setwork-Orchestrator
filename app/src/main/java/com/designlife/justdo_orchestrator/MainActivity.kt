@@ -105,6 +105,7 @@ class MainActivity : ComponentActivity() , TaskListener {
             val formattedTime: String? = format.format(Date(time))
             Toast.makeText(this, "Scheduled Timed Notification Of ${formattedTime}", Toast.LENGTH_SHORT).show()
         }catch (e : Exception){
+            e.message
             Toast.makeText(this, "Enter Integer Value : example : 10", Toast.LENGTH_SHORT).show()
         }
     }
