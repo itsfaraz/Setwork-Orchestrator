@@ -38,4 +38,28 @@ object NotificationClickManager {
         Log.i("NOTIFICATION_FLOW", "NotificationClickManager:: getNotificationIntent : pending intent = null")
         return null
     }
+
+    internal fun startSetworkTaskIntent(context: Context,notificationId : Int, title : String, type: NotificationType, classPath : String) : Unit{
+        try {
+            if (classPath.isNotEmpty()){
+                Log.i("NOTIFICATION_FLOW", "NotificationClickManager:: getNotificationIntent")
+
+                val activity : Activity = Class.forName(classPath).newInstance() as Activity
+                activity?.let {
+                    val intent = Intent(context, activity::class.java).apply {
+                        putExtra("fromNotification", true)
+                        putExtra("notificationId", notificationId)
+                        putExtra("title", title)
+                        putExtra("type", NotificationTypeI.getTypeString(type))
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }
+                    Log.i("NOTIFICATION_FLOW", "NotificationClickManager:: getNotificationIntent : pending intent")
+                    context.startActivity(intent)
+                }
+            }
+        }catch (e : Exception){
+            e.printStackTrace()
+        }
+        Log.i("NOTIFICATION_FLOW", "NotificationClickManager:: getNotificationIntent : pending intent = null")
+    }
 }

@@ -42,7 +42,7 @@ internal class AppStoreRepository(
         try {
             result = notificationDao.getNotificationById(id)
         } catch (e: Exception) {
-            android.util.Log.e("AppStoreRepository", "Get by ID failed", e)
+            Log.e("AppStoreRepository", "Get by ID failed", e)
             null
         }
         return result?.toModel()

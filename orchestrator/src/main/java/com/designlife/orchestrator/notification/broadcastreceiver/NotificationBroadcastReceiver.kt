@@ -1,10 +1,20 @@
 package com.designlife.orchestrator.notification.broadcastreceiver
 
+import android.annotation.SuppressLint
+import android.app.KeyguardManager
+import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.media.AudioAttributes
+import android.media.RingtoneManager
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -16,6 +26,8 @@ import com.designlife.orchestrator.data.NotificationType
 import com.designlife.orchestrator.data.NotificationTypeI
 import com.designlife.orchestrator.notification.NotificationServiceLocator
 import com.designlife.orchestrator.notification.clickmanager.NotificationClickManager
+import com.designlife.orchestrator.presentation.utils.UtilConstant
+import com.designlife.orchestrator.presentation.view.ReminderActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -77,6 +89,10 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
      */
     fun showNotification(context: Context, notification: NotificationInfo) {
         try {
+            if (notification.notificationType == NotificationType.TASK_NOTIFY){
+                triggerFullScreenNotification(context,notification)
+                return
+            }
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE)
                     as NotificationManager
             SETWORK_CHANNEL_ID = getChannelId(notification.notificationType)
@@ -115,9 +131,9 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
                 notificationBuilder.build()
             )
 
+
             // Log delivery in database
             val notificationStore = NotificationServiceLocator.provideAppStoreRepository(context)
-
             scope.launch(Dispatchers.IO) {
                 notificationStore.updateNotificationStatus(
                     id = notification.taskId.toString(),
@@ -129,6 +145,94 @@ internal class NotificationBroadcastReceiver : BroadcastReceiver() {
 
         } catch (e: Exception) {
             Log.e(tag, "Failed to show notification", e)
+        }
+    }
+
+    @SuppressLint("FullScreenIntentPolicy")
+    fun triggerFullScreenNotification(
+        context: Context,
+        notification: NotificationInfo
+    ) {
+        if (notification.notificationType != NotificationType.TASK_NOTIFY) return
+
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE)
+                as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            if (!notificationManager.canUseFullScreenIntent()) {
+                val settingsIntent = Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT).apply {
+                    data = Uri.parse("package:${context.packageName}")
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                context.startActivity(settingsIntent)
+                return
+            }
+        }
+
+        SETWORK_CHANNEL_ID = getChannelId(notification.notificationType)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                SETWORK_CHANNEL_ID,
+                "Task Reminders",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Time-critical task notifications"
+                enableVibration(true)
+                vibrationPattern = longArrayOf(0, 500, 200, 500)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+                    ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                val audioAttributes = AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+                setSound(alarmSound, audioAttributes)
+                setBypassDnd(true)
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val intent = Intent(context, ReminderActivity::class.java).apply {
+            putExtra(UtilConstant.TASK_ID, notification.taskId)
+            putExtra(UtilConstant.TASK_TITLE, notification.taskTitle)
+            putExtra(UtilConstant.TASK_CONTENT, notification.taskSubTitle)
+            putExtra(UtilConstant.TASK_TIME, notification.scheduledTime)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+
+        val notifId = notification.taskId.hashCode()
+        notificationManager.cancel(notifId)
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            notifId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+
+        val builtNotification = NotificationCompat.Builder(context, SETWORK_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_setwork_notification)
+            .setContentTitle("Setwork - Task")
+            .setContentText(notification.taskTitle)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setFullScreenIntent(pendingIntent, true)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setSound(alarmSound)
+            .setVibrate(longArrayOf(0, 500, 200, 500))
+            .setOngoing(true)
+            .setAutoCancel(false)
+            .build()
+
+        notificationManager.notify(notifId, builtNotification)
+
+        val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        if (!keyguardManager.isKeyguardLocked) {
+            context.startActivity(intent)
         }
     }
 

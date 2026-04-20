@@ -29,7 +29,6 @@ import com.designlife.orchestrator.NotificationScheduler
 import com.designlife.orchestrator.SchedulingEngine
 import com.designlife.orchestrator.data.NotificationInfo
 import com.designlife.orchestrator.data.NotificationType
-import com.designlife.orchestrator.notification.clickmanager.NotificationClickManager
 import com.designlife.orchestrator.notification.clickmanager.TaskListener
 import java.util.Date
 import kotlin.math.absoluteValue
@@ -100,7 +99,7 @@ class MainActivity : ComponentActivity() , TaskListener {
             }else{
                 time  = System.currentTimeMillis() + ((minutes.toInt() * 60 ) * 1000)
             }
-            val notificationInfo = NotificationInfo(scheduledTime = time,taskTitle = "Notification Test",taskSubTitle = "Scheduled Notification : Set trigger time ${minutes} minutes",taskId = System.currentTimeMillis().hashCode().absoluteValue, notificationType = NotificationType.DECK_NOTIFY, createdTime = System.currentTimeMillis())
+            val notificationInfo = NotificationInfo(scheduledTime = time,taskTitle = "Notification Test",taskSubTitle = "Scheduled Notification : Set trigger time ${minutes} minutes",taskId = System.currentTimeMillis().hashCode().absoluteValue, notificationType = NotificationType.TASK_NOTIFY, createdTime = System.currentTimeMillis())
             scheduler.scheduleNotification(notificationInfo)
             val format: SimpleDateFormat = SimpleDateFormat("hh:mm aa")
             val formattedTime: String? = format.format(Date(time))
