@@ -1,8 +1,8 @@
 package com.designlife.orchestrator
 
-import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.work.Constraints
@@ -13,18 +13,17 @@ import com.designlife.orchestrator.notification.broadcastreceiver.NotificationBr
 import com.designlife.orchestrator.notification.worker.NotificationCleanupWorker
 import java.util.concurrent.TimeUnit
 
-internal class Orchestrator : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        createNotificationChannels()
-        NotificationServiceLocator.provideAppStoreRepository(this)
-        scheduleNotificationCleanup()
+internal class Orchestrator {
+    fun init(context: Context) {
+        createNotificationChannels(context)
+        NotificationServiceLocator.provideAppStoreRepository(context)
+        scheduleNotificationCleanup(context)
         Log.i("FLOW", "onCreate: Channel Created")
     }
 
-    private fun createNotificationChannels(){
+    private fun createNotificationChannels(context: Context){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val notificationManager = getSystemService(NotificationManager::class.java)
+            val notificationManager = context.getSystemService(NotificationManager::class.java)
             val taskChannel = NotificationChannel(
                 NotificationBroadcastReceiver.SETWORK_TASK_CHANNEL,
                 "setwork_tasks",
@@ -60,7 +59,7 @@ internal class Orchestrator : Application() {
         }
     }
 
-    private fun scheduleNotificationCleanup() {
+    private fun scheduleNotificationCleanup(context: Context) {
         val cleanupWork = PeriodicWorkRequestBuilder<NotificationCleanupWorker>(
             1,
             TimeUnit.DAYS
@@ -73,7 +72,7 @@ internal class Orchestrator : Application() {
             )
             .build()
 
-        NotificationServiceLocator.provideWorkManager(this).enqueueUniquePeriodicWork(
+        NotificationServiceLocator.provideWorkManager(context).enqueueUniquePeriodicWork(
             "notification_cleanup",
             ExistingPeriodicWorkPolicy.KEEP,
             cleanupWork

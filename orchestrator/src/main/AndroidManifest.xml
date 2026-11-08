@@ -10,8 +10,7 @@
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"
         tools:ignore="FullScreenIntentPolicy" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <application
-        android:name=".Orchestrator">
+    <application>
         <!-- <receiver android:name=".notification.broadcastreceiver.TaskReceiver" android:enabled="true" -->
         <!-- android:exported="true"> -->
         <!-- <intent-filter> -->

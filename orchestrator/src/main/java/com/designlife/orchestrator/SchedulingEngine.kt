@@ -6,6 +6,11 @@ class SchedulingEngine(
     private val context: Context
 ) {
     private var notificationScheduler : NotificationSchedulerImpl? = null
+
+    init {
+        Orchestrator().init(context)
+    }
+
     fun notificationScheduler() : NotificationScheduler{
         if (notificationScheduler == null){
             synchronized(this){
